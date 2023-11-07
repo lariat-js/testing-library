@@ -1,7 +1,14 @@
 {
-  "extends": "@mskelton/tsconfig",
   "compilerOptions": {
-    "noEmit": true
-  },
-  "include": ["src"]
+    "lib": ["ESNext"],
+    "module": "nodenext",
+    "target": "esnext",
+    "jsx": "react-jsx",
+    "moduleResolution": "nodenext",
+    "moduleDetection": "force",
+    "strict": true,
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "types": ["@testing-library/jest-dom"]
+  }
 }
