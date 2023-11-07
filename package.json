@@ -12,7 +12,12 @@
   },
   "homepage": "https://github.com/lariat-js/rtl#readme",
   "license": "ISC",
-  "keywords": [],
+  "keywords": [
+    "testing",
+    "react-testing-library",
+    "lariat",
+    "page-object"
+  ],
   "type": "module",
   "exports": {
     "types": "./dist/index.d.ts",
