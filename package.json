@@ -1,16 +1,16 @@
 {
-  "name": "@lariat/rtl",
+  "name": "@lariat/testing-library",
   "description": "Page object framework for React Testing Library",
   "publishConfig": {
     "access": "public"
   },
   "version": "0.0.0-semantically-released",
   "author": "Mark Skelton",
-  "repository": "github:lariat-js/rtl",
+  "repository": "github:lariat-js/testing-library",
   "bugs": {
-    "url": "https://github.com/lariat-js/rtl/issues"
+    "url": "https://github.com/lariat-js/testing-library/issues"
   },
-  "homepage": "https://github.com/lariat-js/rtl#readme",
+  "homepage": "https://github.com/lariat-js/testing-library#readme",
   "license": "ISC",
   "keywords": [
     "testing",

@@ -8,25 +8,25 @@ Page object framework for
 npm
 
 ```bash
-npm install @lariat/rtl
+npm install @lariat/testing-library
 ```
 
 Yarn
 
 ```bash
-yarn add @lariat/rtl
+yarn add @lariat/testing-library
 ```
 
 pnpm
 
 ```bash
-pnpm add @lariat/rtl
+pnpm add @lariat/testing-library
 ```
 
 Bun
 
 ```bash
-bun add @lariat/rtl
+bun add @lariat/testing-library
 ```
 
 ## Why?
@@ -40,8 +40,6 @@ rich methods to query your elements in your tests.
 ## Usage
 
 ```javascript
-import { Collection } from "@lariat/rtl"
-
 class TodoPage extends Collection {
   wrapper = this.byTestId("wrapper")
   input = this.byLabelText("Email")
