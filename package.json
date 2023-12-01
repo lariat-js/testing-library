@@ -1,6 +1,6 @@
 {
   "name": "@lariat/testing-library",
-  "description": "Page object framework for React Testing Library",
+  "description": "Page object framework for Testing Library",
   "publishConfig": {
     "access": "public"
   },

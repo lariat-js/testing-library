@@ -1,7 +1,9 @@
-# Lariat for React Testing Library
+# Lariat for Testing Library
 
-Page object framework for
-[React Testing Library](https://testing-library.com/docs/react-testing-library/intro).
+[![Build status](https://github.com/lariat-js/testing-library/workflows/Build/badge.svg)](https://github.com/lariat-js/testing-library/actions)
+[![npm version](https://img.shields.io/npm/v/@lariat/testing-library)](https://www.npmjs.com/package/@lariat/testing-library)
+
+Page object framework for [Testing Library](https://testing-library.com).
 
 ## Installation
 
@@ -31,10 +33,10 @@ bun add @lariat/testing-library
 
 ## Why?
 
-When writing tests with React Testing Library, a common problem with large
-components that require a large number of tests is duplicating selectors or
-query functions. Assigning to constants can help, but still doesn't fully solve
-the problem. Lariat provides an extremely simple way to create page objects with
+When writing tests with Testing Library, a common problem with large components
+that require a large number of tests is duplicating selectors or query
+functions. Assigning to constants can help, but still doesn't fully solve the
+problem. Lariat provides an extremely simple way to create page objects with
 rich methods to query your elements in your tests.
 
 ## Usage
