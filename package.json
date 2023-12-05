@@ -5,7 +5,7 @@
     "access": "public"
   },
   "version": "0.0.0-semantically-released",
-  "author": "Mark Skelton",
+  "author": "Lariat Team",
   "repository": "github:lariat-js/testing-library",
   "bugs": {
     "url": "https://github.com/lariat-js/testing-library/issues"
