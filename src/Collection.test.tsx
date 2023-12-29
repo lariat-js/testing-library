@@ -1,7 +1,8 @@
-import { describe, it, expect, beforeEach } from "vitest"
-import { Collection } from "./Collection.js"
+/* eslint-disable vitest/no-conditional-tests, vitest/no-conditional-in-test */
 import { cleanup, render } from "@testing-library/react"
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
+import { beforeEach, describe, expect, it } from "vitest"
+import { Collection } from "./Collection.js"
 
 class Page extends Collection {
   wrapper = this.byTestId("wrapper")
@@ -10,7 +11,7 @@ class Page extends Collection {
 
 const page = new Page()
 
-describe("Collection", () => {
+describe("collection", () => {
   beforeEach(() => cleanup())
 
   it("should support dynamic methods", () => {
@@ -22,6 +23,17 @@ describe("Collection", () => {
 
     expect(page.wrapper()).toBeInTheDocument()
     expect(page.name()).toHaveValue("foo")
+  })
+
+  it("should support get as an alias for calling directly", () => {
+    render(
+      <div data-testid="wrapper">
+        <input aria-label="Name" value="foo" onChange={() => {}} />
+      </div>,
+    )
+
+    expect(page.wrapper.get()).toBeInTheDocument()
+    expect(page.name.get()).toHaveValue("foo")
   })
 
   it("should support query", () => {
@@ -51,7 +63,7 @@ describe("Collection", () => {
     render(<Component />)
     expect(page.wrapper()).toBeInTheDocument()
     expect(page.name.query()).not.toBeInTheDocument()
-    expect(await page.name.find()).toBeInTheDocument()
+    await expect(page.name.find()).resolves.toBeInTheDocument()
   })
 
   it("should support all", async () => {
@@ -82,7 +94,7 @@ describe("Collection", () => {
     expect(page.wrapper.all()).toHaveLength(2)
     expect(page.wrapper.query.all()).toHaveLength(2)
     expect(page.name.query.all()).toHaveLength(0)
-    expect(await page.name.find.all()).toHaveLength(3)
+    await expect(page.name.find.all()).resolves.toHaveLength(3)
   })
 
   it("should support dynamic methods", () => {

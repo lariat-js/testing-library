@@ -16,6 +16,9 @@ type EnhancedQuery<T extends Query> = (
   find: (() => ReturnType<Screen[`find${T}`]>) & {
     all: () => ReturnType<Screen[`findAll${T}`]>
   }
+  get: (() => ReturnType<Screen[`get${T}`]>) & {
+    all: () => ReturnType<Screen[`getAll${T}`]>
+  }
   query: (() => ReturnType<Screen[`query${T}`]>) & {
     all: () => ReturnType<Screen[`queryAll${T}`]>
   }
@@ -56,6 +59,10 @@ export class Collection {
     const withArgs = (...args: Parameters<Screen[`get${T}`]>) => {
       const enhanced: any = () => this.#screen(enhanced, `get${query}`, args)
       enhanced.all = () => this.#screen(enhanced.all, `getAll${query}`, args)
+
+      enhanced.get = () => this.#screen(enhanced.get, `get${query}`, args)
+      enhanced.get.all = () =>
+        this.#screen(enhanced.get.all, `getAll${query}`, args)
 
       enhanced.query = () => this.#screen(enhanced.find, `query${query}`, args)
       enhanced.query.all = () =>

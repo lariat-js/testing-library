@@ -67,6 +67,15 @@ under the hood.
 page.input()
 ```
 
+You can also use the `.get()` method as an alias for calling the method
+directly. This helps with readability when using dynamic methods which are
+described later.
+
+```javascript
+page.input.get()
+page.button("name").get()
+```
+
 If you want to use the `queryBy*` method (useful for testing element's do not
 exist), you can use `.query()`.
 
