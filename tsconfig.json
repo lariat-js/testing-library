@@ -6,6 +6,7 @@
     "jsx": "react-jsx",
     "moduleResolution": "nodenext",
     "moduleDetection": "force",
+    "declaration": true,
     "strict": true,
     "outDir": "dist",
     "skipLibCheck": true,
