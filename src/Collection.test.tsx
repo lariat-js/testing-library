@@ -97,6 +97,68 @@ describe("collection", () => {
     await expect(page.name.find.all()).resolves.toHaveLength(3)
   })
 
+  it("should support first", async () => {
+    function Component() {
+      const [on, setOn] = useState(false)
+
+      useEffect(() => {
+        setTimeout(() => setOn(true))
+      }, [])
+
+      return (
+        <>
+          <div data-testid="wrapper" id="one"></div>
+          <div data-testid="wrapper" id="two">
+            {on ? (
+              <>
+                <input aria-label="Name" id="three" />
+                <input aria-label="Name" id="four" />
+                <input aria-label="Name" id="five" />
+              </>
+            ) : null}
+          </div>
+        </>
+      )
+    }
+    render(<Component />)
+
+    expect(page.wrapper.first()).toHaveAttribute("id", "one")
+    expect(page.wrapper.query.first()).toHaveAttribute("id", "one")
+    expect(page.name.query.first()).not.toBeInTheDocument()
+    await expect(page.name.find.first()).resolves.toHaveAttribute("id", "three")
+  })
+
+  it("should support last", async () => {
+    function Component() {
+      const [on, setOn] = useState(false)
+
+      useEffect(() => {
+        setTimeout(() => setOn(true))
+      }, [])
+
+      return (
+        <>
+          <div data-testid="wrapper" id="one"></div>
+          <div data-testid="wrapper" id="two">
+            {on ? (
+              <>
+                <input aria-label="Name" id="three" />
+                <input aria-label="Name" id="four" />
+                <input aria-label="Name" id="five" />
+              </>
+            ) : null}
+          </div>
+        </>
+      )
+    }
+    render(<Component />)
+
+    expect(page.wrapper.last()).toHaveAttribute("id", "two")
+    expect(page.wrapper.query.last()).toHaveAttribute("id", "two")
+    expect(page.name.query.last()).not.toBeInTheDocument()
+    await expect(page.name.find.last()).resolves.toHaveAttribute("id", "five")
+  })
+
   it("should support dynamic methods", () => {
     class Page extends Collection {
       input = (name: string) => this.byRole("textbox", { name })
