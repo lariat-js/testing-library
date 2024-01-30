@@ -15,3 +15,9 @@ export function unwrap<T>(ident: (...args: unknown[]) => unknown, fn: () => T): 
     throw error
   }
 }
+
+export type NestedCollection<T> = T & {
+  first(): T
+  last(): T
+  nth(index: number): T
+}

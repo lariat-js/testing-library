@@ -217,4 +217,91 @@ describe("collection", () => {
     expect(name()).toHaveValue("foo")
     expect(email()).toHaveValue("bar")
   })
+
+  describe("nesting", () => {
+    it("with a root", async () => {
+      class TextField extends Collection {
+        input = this.byRole("textbox")
+      }
+
+      class LoginPage extends Collection {
+        email = this.nest(TextField, this.byTestId("email"))
+        password = this.nest(TextField, this.byTestId("password"))
+      }
+
+      render(
+        <div>
+          <div data-testid="email">
+            <input value="foo" onChange={() => {}} />
+          </div>
+
+          <div data-testid="password">
+            <input value="bar" onChange={() => {}} />
+          </div>
+        </div>,
+      )
+
+      const page = new LoginPage()
+      expect(page.email.input()).toHaveValue("foo")
+      expect(page.password.input()).toHaveValue("bar")
+    })
+
+    it("without a root", async () => {
+      class Header extends Collection {
+        logo = this.byTestId("logo")
+        title = this.byTestId("title")
+      }
+
+      class LoginPage extends Collection {
+        header = this.nest(Header)
+        other = this.byTestId("other")
+      }
+
+      render(
+        <div>
+          <div data-testid="logo">foo</div>
+          <div data-testid="other">other</div>
+          <div data-testid="title">bar</div>
+        </div>,
+      )
+
+      const page = new LoginPage()
+      expect(page.other()).toHaveTextContent("other")
+      expect(page.header.logo()).toHaveTextContent("foo")
+      expect(page.header.title()).toHaveTextContent("bar")
+    })
+
+    it("first, last, nth", async () => {
+      class TextField extends Collection {
+        input = this.byRole("textbox")
+      }
+
+      class LoginPage extends Collection {
+        field = this.nest(TextField, this.byTestId("field"))
+      }
+
+      render(
+        <div>
+          <div data-testid="field">
+            <input value="foo" onChange={() => {}} />
+          </div>
+
+          <div data-testid="field">
+            <input value="bar" onChange={() => {}} />
+          </div>
+
+          <div data-testid="field">
+            <input value="baz" onChange={() => {}} />
+          </div>
+        </div>,
+      )
+
+      const page = new LoginPage()
+      expect(page.field.first().input()).toHaveValue("foo")
+      expect(page.field.last().input()).toHaveValue("baz")
+      expect(page.field.nth(0).input()).toHaveValue("foo")
+      expect(page.field.nth(1).input()).toHaveValue("bar")
+      expect(page.field.nth(-1).input()).toHaveValue("baz")
+    })
+  })
 })

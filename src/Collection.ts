@@ -1,5 +1,5 @@
-import { Screen, screen } from "@testing-library/react"
-import { set, unwrap } from "./utils.js"
+import { Screen, screen, within } from "@testing-library/react"
+import { NestedCollection, set, unwrap } from "./utils.js"
 
 type Query =
   | "ByAltText"
@@ -20,15 +20,15 @@ type EnhancedQuery<T extends Query> = (...args: Parameters<Screen[`get${T}`]>) =
     last: () => ReturnType<Screen[`query${T}`]>
     nth: (index: number) => ReturnType<Screen[`query${T}`]>
   }
-  first: () => ReturnType<Screen[`query${T}`]>
+  first: () => ReturnType<Screen[`get${T}`]>
   get: (() => ReturnType<Screen[`get${T}`]>) & {
     all: () => ReturnType<Screen[`getAll${T}`]>
     first: () => ReturnType<Screen[`query${T}`]>
     last: () => ReturnType<Screen[`query${T}`]>
     nth: (index: number) => ReturnType<Screen[`query${T}`]>
   }
-  last: () => ReturnType<Screen[`query${T}`]>
-  nth: (index: number) => ReturnType<Screen[`query${T}`]>
+  last: () => ReturnType<Screen[`get${T}`]>
+  nth: (index: number) => ReturnType<Screen[`get${T}`]>
   query: (() => ReturnType<Screen[`query${T}`]>) & {
     all: () => ReturnType<Screen[`queryAll${T}`]>
     first: () => ReturnType<Screen[`query${T}`]>
@@ -37,9 +37,8 @@ type EnhancedQuery<T extends Query> = (...args: Parameters<Screen[`get${T}`]>) =
   }
 }
 
-const s = screen as any
-
 export class Collection {
+  #screen: ReturnType<typeof within>
   protected byAltText: EnhancedQuery<"ByAltText">
   protected byLabelText: EnhancedQuery<"ByLabelText">
   protected byPlaceholderText: EnhancedQuery<"ByPlaceholderText">
@@ -48,7 +47,8 @@ export class Collection {
   protected byText: EnhancedQuery<"ByText">
   protected byTitle: EnhancedQuery<"ByTitle">
 
-  constructor() {
+  constructor(root?: HTMLElement) {
+    this.#screen = root ? within(root) : screen
     this.byAltText = this.#enhanceQuery("ByAltText")
     this.byLabelText = this.#enhanceQuery("ByLabelText")
     this.byPlaceholderText = this.#enhanceQuery("ByPlaceholderText")
@@ -58,29 +58,43 @@ export class Collection {
     this.byTitle = this.#enhanceQuery("ByTitle")
   }
 
+  protected nest<T extends Query, U>(
+    collection: new (root?: HTMLElement) => U,
+    root?: ReturnType<EnhancedQuery<T>>,
+  ): NestedCollection<U> {
+    const instance = new collection(root?.all()[0])
+    const inst = instance as NestedCollection<U>
+
+    inst.nth = (index: number) => new collection(root?.nth(index))
+    inst.first = () => inst.nth(0)
+    inst.last = () => inst.nth(-1)
+
+    return inst
+  }
+
   #enhanceQuery = <T extends Query>(query: T): EnhancedQuery<T> => {
     const withArgs = (...args: unknown[]) => {
-      const enhanced: any = () => unwrap(enhanced, () => s[`get${query}`](...args))
+      const enhanced: any = () => unwrap(enhanced, () => this.#screen[`get${query}`](...args))
 
-      set(enhanced, "all", () => s[`getAll${query}`](...args))
+      set(enhanced, "all", () => this.#screen[`getAll${query}`](...args))
       set(enhanced, "nth", (index: number) => enhanced.all().at(index))
       set(enhanced, "first", () => enhanced.nth(0))
       set(enhanced, "last", () => enhanced.nth(-1))
 
-      set(enhanced, "get", () => s[`get${query}`](...args))
-      set(enhanced.get, "all", () => s[`getAll${query}`](...args))
+      set(enhanced, "get", () => this.#screen[`get${query}`](...args))
+      set(enhanced.get, "all", () => this.#screen[`getAll${query}`](...args))
       set(enhanced.get, "nth", (index: number) => enhanced.get.all().at(index))
       set(enhanced.get, "first", () => enhanced.get.nth(0))
       set(enhanced.get, "last", () => enhanced.get.nth(-1))
 
-      set(enhanced, "query", () => s[`query${query}`](...args))
-      set(enhanced.query, "all", () => s[`queryAll${query}`](...args))
+      set(enhanced, "query", () => this.#screen[`query${query}`](...args))
+      set(enhanced.query, "all", () => this.#screen[`queryAll${query}`](...args))
       set(enhanced.query, "nth", (index: number) => enhanced.query.all()?.at(index) ?? null)
       set(enhanced.query, "first", () => enhanced.query.nth(0))
       set(enhanced.query, "last", () => enhanced.query.nth(-1))
 
-      set(enhanced, "find", () => s[`find${query}`](...args))
-      set(enhanced.find, "all", () => s[`findAll${query}`](...args))
+      set(enhanced, "find", () => this.#screen[`find${query}`](...args))
+      set(enhanced.find, "all", () => this.#screen[`findAll${query}`](...args))
       set(enhanced.find, "nth", (index: number) =>
         enhanced.find.all().then((res: unknown[]) => res.at(index)),
       )

@@ -98,6 +98,84 @@ page.input.query.all()
 await page.input.find.all()
 ```
 
+## `first`, `last`, and `nth`
+
+In cases where there are multiple similar items on the page, you may need to get
+an item by it's index on the page. You can use the `.first()`, `.last()`, and
+`.nth()` methods to accomplish this.
+
+```ts
+class TodoPage extends Collection {
+  input = this.byRole("listitem")
+}
+
+const page = new TodoPage()
+const firstItem = page.item.first()
+const secondItem = page.item.nth(1)
+const lastItem = page.item.last()
+```
+
+## Nested collections
+
+So far, we've shown examples of simple collections, but Lariat also gives you
+the ability to nest collections inside each other. With this approach, you can
+create a page object structure that more closely resembles your page layout.
+
+To nest a collection, use the `Collection.nest()` method and pass the nested
+collection class and the root of the nested collection.
+
+```ts
+class TextField extends Collection {
+  input = this.byRole("textbox")
+}
+
+class LoginPage extends Collection {
+  email = this.nest(TextField, this.byTestId("email"))
+  password = this.nest(TextField, this.byTestId("password"))
+}
+
+const page = new TodoPage()
+
+page.email.input()
+page.password.input.query()
+```
+
+If your nested collection is used merely to group a set of related elements
+together, you can omit the second argument to use the parent collection's root.
+
+```ts
+class Header extends Collection {
+  logo = this.byTestId("logo")
+  title = this.byTestId("title")
+}
+
+class LoginPage extends Collection {
+  header = this.nest(Header)
+}
+
+page.header.logo()
+page.header.title.query()
+```
+
+### `first`, `last`, and `nth`
+
+In some cases, you may have a nested collection where multiple instances exist
+on the page. For example, a todo list may contain multiple todo items each of
+which are represented as a collection. To make these scenarios easier, Lariat
+provides `first`, `last`, and `nth` methods which will return a new instance of
+the nested collection scoped to that specific item.
+
+```ts
+class TodoPage extends Collection {
+  field = this.nest(TextField, this.byTestId("field"))
+}
+
+const page = new TodoPage()
+const firstField = page.field.first()
+const secondField = page.field.nth(1)
+const lastField = page.field.last()
+```
+
 ## Dynamic methods
 
 Because `Collection` is an ordinary JavaScript class, you can create dynamic
@@ -111,23 +189,4 @@ class TodoPage extends Collection {
 const page = new TodoPage()
 const name = page.input("Name")
 const email = page.input("Email")
-```
-
-### `first`, `last`, and `nth`
-
-In some cases, you may have a nested collection where multiple instances exist
-on the page. For example, a todo list may contain multiple todo items each of
-which are represented as a collection. To make these scenarios easier, Lariat
-provides `first`, `last`, and `nth` methods which will return a new instance of
-the nested collection scoped to that specific item.
-
-```ts
-class TodoPage extends Collection {
-  input = this.byRole("listitem")
-}
-
-const page = new TodoPage()
-const firstItem = page.item.first()
-const secondItem = page.item.nth(1)
-const lastItem = page.item.last()
 ```
