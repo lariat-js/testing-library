@@ -89,8 +89,8 @@ describe("collection", () => {
         </>
       )
     }
-    render(<Component />)
 
+    render(<Component />)
     expect(page.wrapper.all()).toHaveLength(2)
     expect(page.wrapper.query.all()).toHaveLength(2)
     expect(page.name.query.all()).toHaveLength(0)
@@ -120,8 +120,8 @@ describe("collection", () => {
         </>
       )
     }
-    render(<Component />)
 
+    render(<Component />)
     expect(page.wrapper.first()).toHaveAttribute("id", "one")
     expect(page.wrapper.query.first()).toHaveAttribute("id", "one")
     expect(page.name.query.first()).not.toBeInTheDocument()
@@ -151,8 +151,8 @@ describe("collection", () => {
         </>
       )
     }
-    render(<Component />)
 
+    render(<Component />)
     expect(page.wrapper.nth(0)).toHaveAttribute("id", "one")
     expect(page.wrapper.nth(1)).toHaveAttribute("id", "two")
     expect(page.wrapper.nth(-1)).toHaveAttribute("id", "two")
@@ -190,8 +190,8 @@ describe("collection", () => {
         </>
       )
     }
-    render(<Component />)
 
+    render(<Component />)
     expect(page.wrapper.last()).toHaveAttribute("id", "two")
     expect(page.wrapper.query.last()).toHaveAttribute("id", "two")
     expect(page.name.query.last()).not.toBeInTheDocument()
@@ -257,6 +257,8 @@ describe("collection", () => {
         other = this.byTestId("other")
       }
 
+      const page = new LoginPage()
+
       render(
         <div>
           <div data-testid="logo">foo</div>
@@ -265,7 +267,6 @@ describe("collection", () => {
         </div>,
       )
 
-      const page = new LoginPage()
       expect(page.other()).toHaveTextContent("other")
       expect(page.header.logo()).toHaveTextContent("foo")
       expect(page.header.title()).toHaveTextContent("bar")
@@ -279,6 +280,8 @@ describe("collection", () => {
       class LoginPage extends Collection {
         field = this.nest(TextField, this.byTestId("field"))
       }
+
+      const page = new LoginPage()
 
       render(
         <div>
@@ -296,7 +299,6 @@ describe("collection", () => {
         </div>,
       )
 
-      const page = new LoginPage()
       expect(page.field.first().input()).toHaveValue("foo")
       expect(page.field.last().input()).toHaveValue("baz")
       expect(page.field.nth(0).input()).toHaveValue("foo")

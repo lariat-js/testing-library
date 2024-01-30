@@ -38,7 +38,8 @@ type EnhancedQuery<T extends Query> = (...args: Parameters<Screen[`get${T}`]>) =
 }
 
 export class Collection {
-  #screen: ReturnType<typeof within>
+  #root?: () => HTMLElement | undefined
+
   protected byAltText: EnhancedQuery<"ByAltText">
   protected byLabelText: EnhancedQuery<"ByLabelText">
   protected byPlaceholderText: EnhancedQuery<"ByPlaceholderText">
@@ -47,8 +48,8 @@ export class Collection {
   protected byText: EnhancedQuery<"ByText">
   protected byTitle: EnhancedQuery<"ByTitle">
 
-  constructor(root?: HTMLElement) {
-    this.#screen = root ? within(root) : screen
+  constructor(root?: () => HTMLElement | undefined) {
+    this.#root = root
     this.byAltText = this.#enhanceQuery("ByAltText")
     this.byLabelText = this.#enhanceQuery("ByLabelText")
     this.byPlaceholderText = this.#enhanceQuery("ByPlaceholderText")
@@ -58,14 +59,19 @@ export class Collection {
     this.byTitle = this.#enhanceQuery("ByTitle")
   }
 
+  get #screen(): any {
+    const root = this.#root?.()
+    return root ? within(root) : screen
+  }
+
   protected nest<T extends Query, U>(
-    collection: new (root?: HTMLElement) => U,
+    collection: new (root?: () => HTMLElement | undefined) => U,
     root?: ReturnType<EnhancedQuery<T>>,
   ): NestedCollection<U> {
-    const instance = new collection(root?.all()[0])
+    const instance = new collection(() => root?.get())
     const inst = instance as NestedCollection<U>
 
-    inst.nth = (index: number) => new collection(root?.nth(index))
+    inst.nth = (index: number) => new collection(() => root?.nth(index))
     inst.first = () => inst.nth(0)
     inst.last = () => inst.nth(-1)
 
