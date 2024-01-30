@@ -1,4 +1,6 @@
-/* eslint-disable vitest/no-conditional-tests, vitest/no-conditional-in-test */
+/* eslint-disable vitest/max-expects */
+/* eslint-disable vitest/no-conditional-in-test */
+/* eslint-disable vitest/no-conditional-tests */
 import { cleanup, render } from "@testing-library/react"
 import { useEffect, useState } from "react"
 import { beforeEach, describe, expect, it } from "vitest"
@@ -53,9 +55,7 @@ describe("collection", () => {
 
       return (
         <div data-testid="wrapper">
-          {on ? (
-            <input aria-label="Name" value="foo" onChange={() => {}} />
-          ) : null}
+          {on ? <input aria-label="Name" value="foo" onChange={() => {}} /> : null}
         </div>
       )
     }
