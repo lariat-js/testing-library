@@ -112,3 +112,22 @@ const page = new TodoPage()
 const name = page.input("Name")
 const email = page.input("Email")
 ```
+
+### `first`, `last`, and `nth`
+
+In some cases, you may have a nested collection where multiple instances exist
+on the page. For example, a todo list may contain multiple todo items each of
+which are represented as a collection. To make these scenarios easier, Lariat
+provides `first`, `last`, and `nth` methods which will return a new instance of
+the nested collection scoped to that specific item.
+
+```ts
+class TodoPage extends Collection {
+  input = this.byRole("listitem")
+}
+
+const page = new TodoPage()
+const firstItem = page.item.first()
+const secondItem = page.item.nth(1)
+const lastItem = page.item.last()
+```

@@ -128,6 +128,45 @@ describe("collection", () => {
     await expect(page.name.find.first()).resolves.toHaveAttribute("id", "three")
   })
 
+  it("should support nth", async () => {
+    function Component() {
+      const [on, setOn] = useState(false)
+
+      useEffect(() => {
+        setTimeout(() => setOn(true))
+      }, [])
+
+      return (
+        <>
+          <div data-testid="wrapper" id="one"></div>
+          <div data-testid="wrapper" id="two">
+            {on ? (
+              <>
+                <input aria-label="Name" id="three" />
+                <input aria-label="Name" id="four" />
+                <input aria-label="Name" id="five" />
+              </>
+            ) : null}
+          </div>
+        </>
+      )
+    }
+    render(<Component />)
+
+    expect(page.wrapper.nth(0)).toHaveAttribute("id", "one")
+    expect(page.wrapper.nth(1)).toHaveAttribute("id", "two")
+    expect(page.wrapper.nth(-1)).toHaveAttribute("id", "two")
+    expect(page.wrapper.query.nth(0)).toHaveAttribute("id", "one")
+    expect(page.wrapper.query.nth(1)).toHaveAttribute("id", "two")
+    expect(page.wrapper.query.nth(-1)).toHaveAttribute("id", "two")
+    expect(page.name.query.nth(0)).not.toBeInTheDocument()
+    expect(page.name.query.nth(1)).not.toBeInTheDocument()
+    expect(page.name.query.nth(-1)).not.toBeInTheDocument()
+    await expect(page.name.find.nth(0)).resolves.toHaveAttribute("id", "three")
+    await expect(page.name.find.nth(1)).resolves.toHaveAttribute("id", "four")
+    await expect(page.name.find.nth(-1)).resolves.toHaveAttribute("id", "five")
+  })
+
   it("should support last", async () => {
     function Component() {
       const [on, setOn] = useState(false)
