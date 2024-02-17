@@ -42,6 +42,7 @@
     "@babel/core": "^7.22.10",
     "@babel/eslint-parser": "^7.22.10",
     "@mskelton/eslint-config": "^8.2.1",
+    "@mskelton/semantic-release-config": "^1.0.1",
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^14.0.0",
     "@typescript-eslint/eslint-plugin": "^6.4.1",
